@@ -9,7 +9,7 @@ def hello():
 
 @app.route('/glucose')
 def glucose():
-    suger_dict{} = suger_reading.get_glucose_reading()
+    suger_dict = suger_reading.get_glucose_reading()
     return jsonify(suger_dict)
 
 if __name__ == '__main__':
