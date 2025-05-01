@@ -4,13 +4,10 @@ import suger_reading
 app = Flask(__name__)  
 
 @app.route('/')
-def main():
-    return "Server is running!"
-
-@app.route('/glucose')
 def glucose():
     suger_dict = suger_reading.get_glucose_reading()
-    return jsonify(suger_dict)
+
+    return jsonify(suger_dict), suger_dict["Glucose"]
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
