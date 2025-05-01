@@ -22,11 +22,18 @@ def HIGH_or_LOW(glucose_reading):
         return "ok"
     
 
-
-while flag:
-    
-    glucose = dexcom.get_current_glucose_reading()
-    print(f"Glucose: {glucose.value} mg/dL is {HIGH_or_LOW(glucose.value)}") 
+def get_glucose_reading():
+   while flag: 
+    try:
+        glucose = dexcom.get_current_glucose_reading()
+    except Exception as e:
+        glucose = dexcom.get_current_glucose_reading()
     suger_dict["Glucose"] = glucose.value
+    print(f"Glucose: {glucose.value} mg/dL is {HIGH_or_LOW(glucose.value)}") 
     time.sleep(250)
+    return suger_dict
+   
+
+
+
 
