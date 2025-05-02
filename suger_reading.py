@@ -1,14 +1,17 @@
 from pydexcom import Dexcom
+import time
 
 LOW_SUGER = 60
 HIGH_SUGER = 250
+x=0
+suger_dict = {}
 
-# Fill in your Dexcom credentials
-USERNAME = "roee.dexcom"
-PASSWORD = "Sdfwer234"
+flag = True
+dexcom = Dexcom(username='roee.dexcom',password='Sdfwer234',region="ous")
+glucose = dexcom.get_current_glucose_reading()
 
-# Initialize Dexcom object
-dexcom = Dexcom(USERNAME, PASSWORD, region="ous")
+
+
 
 def HIGH_or_LOW(glucose_reading):
     if glucose_reading <= LOW_SUGER:
@@ -17,6 +20,7 @@ def HIGH_or_LOW(glucose_reading):
         return "high"
     else:
         return "ok"
+    
 
 def get_glucose_reading():
     try:
