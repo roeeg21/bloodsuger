@@ -37,3 +37,4 @@ def get_glucose_reading():
 
 
 
+get_glucose_reading()
