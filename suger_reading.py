@@ -1,17 +1,14 @@
 from pydexcom import Dexcom
-import time
 
 LOW_SUGER = 60
 HIGH_SUGER = 250
-x=0
-suger_dict = {}
 
-flag = True
-dexcom = Dexcom(username='roee.dexcom',password='Sdfwer234',region="ous")
-glucose = dexcom.get_current_glucose_reading()
+# Fill in your Dexcom credentials
+USERNAME = "roee.dexcom"
+PASSWORD = "Sdfwer234"
 
-
-
+# Initialize Dexcom object
+dexcom = Dexcom(USERNAME, PASSWORD, region="ous")
 
 def HIGH_or_LOW(glucose_reading):
     if glucose_reading <= LOW_SUGER:
@@ -20,21 +17,16 @@ def HIGH_or_LOW(glucose_reading):
         return "high"
     else:
         return "ok"
-    
 
 def get_glucose_reading():
-   while flag: 
     try:
         glucose = dexcom.get_current_glucose_reading()
-    except Exception as e:
-        if e == NoneType:
-             glucose = dexcom.get_current_glucose_reading()
-        suger_dict["Glucose"] = glucose.value
-        print(f"Glucose: {glucose.value} mg/dL is {HIGH_or_LOW(glucose.value)}") 
-        time.sleep(250)
+        suger_dict = {
+            "Glucose": glucose.value,
+            "Status": HIGH_or_LOW(glucose.value),
+            "Trend": glucose.trend_description,
+            "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S")
+        }
         return suger_dict
-   
-
-
-
-
+    except Exception as e:
+        return {"error": str(e)}
