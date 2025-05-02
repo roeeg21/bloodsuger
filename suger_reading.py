@@ -27,14 +27,14 @@ def get_glucose_reading():
     try:
         glucose = dexcom.get_current_glucose_reading()
     except Exception as e:
-        glucose = dexcom.get_current_glucose_reading()
-    suger_dict["Glucose"] = glucose.value
-    print(f"Glucose: {glucose.value} mg/dL is {HIGH_or_LOW(glucose.value)}") 
-    time.sleep(250)
-    return suger_dict
+        if e == NoneType:
+             glucose = dexcom.get_current_glucose_reading()
+        suger_dict["Glucose"] = glucose.value
+        print(f"Glucose: {glucose.value} mg/dL is {HIGH_or_LOW(glucose.value)}") 
+        time.sleep(250)
+        return suger_dict
    
 
 
 
 
-get_glucose_reading()
