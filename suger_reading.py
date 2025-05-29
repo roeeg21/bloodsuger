@@ -4,8 +4,9 @@ import os
 
 LOW_SUGER = 60
 HIGH_SUGER = 250
-USERNAME = os.getenv('Dexcom_username')
-PASSWORD = os.getenv('Dexcom_password')
+USERNAME = "roee.dexcom"
+PASSWORD = "Sdfwer234"
+
 suger_dict = {}
 
 flag = True
