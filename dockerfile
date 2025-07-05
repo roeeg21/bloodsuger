@@ -14,4 +14,4 @@ copy . /app.py
 copy ./requirements.txt ./requirements.txt
 copy ./suger_readings.py ./suger_readings.py
 
-cmd app.py
+cmd python3 app.py

@@ -4,14 +4,15 @@ import os
 
 LOW_SUGER = 60
 HIGH_SUGER = 250
-USERNAME = "roee.dexcom"
-PASSWORD = "Sdfwer234"
-
+#USERNAME_tmp = os.getenv('Dexcom_username')
+#PASSWORD_tmp = os.getenv('Dexcom_password')
 suger_dict = {}
 
 flag = True
-dexcom = Dexcom(username=USERNAME,password=PASSWORD,region="ous")
-glucose = dexcom.get_current_glucose_reading()
+
+#dexcom = Dexcom(username=USERNAME_tmp,password=PASSWORD_tmp,region="ous")
+dexcom = Dexcom(username="roee.dexcom",password="Sdfwer234",region="ous")
+
 
 
 
@@ -44,6 +45,6 @@ def get_glucose_reading():
             "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S")
         }
         return suger_dict
-    
+         
 
 print(get_glucose_reading())
