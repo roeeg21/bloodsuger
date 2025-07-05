@@ -6,15 +6,14 @@ LOW_SUGER = 60
 HIGH_SUGER = 250
 USERNAME_tmp = os.getenv('Dexcom_username')
 PASSWORD_tmp = os.getenv('Dexcom_password')
-#USERNAME = "roee.dexcom"
-#PASSWORD = "Sdfwer234"
+
 suger_dict = {}
 
 flag = True
 
 
 dexcom = Dexcom(username=USERNAME_tmp,password=PASSWORD_tmp,region="ous")
-#dexcom = Dexcom(username=USERNAME,password=PASSWORD,region="ous")
+
 
 
 
