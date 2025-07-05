@@ -1,5 +1,5 @@
 from pydexcom import Dexcom
-from dotenv import load_dotenv
+
 import os
 
 LOW_SUGER = 60
@@ -11,7 +11,7 @@ PASSWORD_tmp = os.getenv('Dexcom_password')
 suger_dict = {}
 
 flag = True
-load_dotenv()
+
 
 dexcom = Dexcom(username=USERNAME_tmp,password=PASSWORD_tmp,region="ous")
 #dexcom = Dexcom(username=USERNAME,password=PASSWORD,region="ous")
