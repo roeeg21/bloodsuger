@@ -6,12 +6,14 @@ LOW_SUGER = 60
 HIGH_SUGER = 250
 #USERNAME_tmp = os.getenv('Dexcom_username')
 #PASSWORD_tmp = os.getenv('Dexcom_password')
+USERNAME = "roee.dexcom"
+PASSWORD = "Sdfwer234"
 suger_dict = {}
 
 flag = True
 
 #dexcom = Dexcom(username=USERNAME_tmp,password=PASSWORD_tmp,region="ous")
-dexcom = Dexcom(username="roee.dexcom",password="Sdfwer234",region="ous")
+dexcom = Dexcom(username=USERNAME,password=PASSWORD,region="ous")
 
 
 
@@ -27,24 +29,14 @@ def HIGH_or_LOW(glucose_reading):
     
 
 def get_glucose_reading():
-    try:
-        glucose = dexcom.get_current_glucose_reading()
-        suger_dict = {
-            "Glucose": glucose.value,
-            "Status": HIGH_or_LOW(glucose.value),
-            "Trend": glucose.trend_description,
-            "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S")
-        }
-        return suger_dict
-    except Exception as e:
-        glucose = dexcom.get_latest_glucose_reading()
-        suger_dict = {
-            "Glucose": glucose.value,
-            "Status": HIGH_or_LOW(glucose.value),
-            "Trend": glucose.trend_description,
-            "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S")
-        }
-        return suger_dict
+    glucose = dexcom.get_latest_glucose_reading()
+    suger_dict = {
+        "Glucose": glucose.value,
+        "Status": HIGH_or_LOW(glucose.value),
+        "Trend": glucose.trend_description,
+        "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S")}
+    return suger_dict
+    
          
 
 print(get_glucose_reading())
