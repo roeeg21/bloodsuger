@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dexcom G7</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #0a0e27;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .monitor-container {
+            width: 100%;
+            max-width: 380px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #00ffff;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 30px #00ffff;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 
+                    0 0 10px #00ffff,
+                    0 0 20px #00ffff,
+                    0 0 30px #00ffff;
+            }
+            to {
+                text-shadow: 
+                    0 0 15px #00ffff,
+                    0 0 30px #00ffff,
+                    0 0 45px #00ffff;
+            }
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 6px;
+            border-radius: 12px;
+            border: 2px solid #00ffff;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.6),
+                inset 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .glucose-circle {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto 40px;
+        }
+
+        .circle-bg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(15, 23, 42, 0.9), rgba(10, 14, 39, 0.95));
+            border: 3px solid #00ffff;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.4),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: pulse-border 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% {
+                box-shadow: 
+                    0 0 30px rgba(0, 255, 255, 0.4),
+                    inset 0 0 30px rgba(0, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 0 40px rgba(0, 255, 255, 0.6),
+                    inset 0 0 40px rgba(0, 255, 255, 0.2);
+            }
+        }
+
+        .circle-inner {
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: rgba(10, 14, 39, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .glucose-value {
+            font-size: 72px;
+            font-weight: 900;
+            color: #00ffff;
+            line-height: 1;
+            margin-bottom: 4px;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff;
+        }
+
+        .glucose-unit {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00ffff;
+            opacity: 0.7;
+            letter-spacing: 2px;
+        }
+
+        .trend-arrow {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: rgba(10, 14, 39, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #00ffff;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.5),
+                inset 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .status-ring {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            width: calc(100% + 6px);
+            height: calc(100% + 6px);
+            border-radius: 50%;
+            border: 3px solid transparent;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .status-ring.ok {
+            border-top-color: #00ff88;
+            border-right-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+        }
+
+        .status-ring.low {
+            border-top-color: #ff0055;
+            border-right-color: #ff0055;
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+        }
+
+        .status-ring.high {
+            border-top-color: #ffaa00;
+            border-right-color: #ffaa00;
+            box-shadow: 0 0 30px rgba(255, 170, 0, 0.6);
+        }
+
+        .info-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 2px solid #00ffff;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid;
+        }
+
+        .status-badge.ok {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .status-badge.low {
+            background: rgba(255, 0, 85, 0.1);
+            color: #ff0055;
+            border-color: #ff0055;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+        }
+
+        .status-badge.high {
+            background: rgba(255, 170, 0, 0.1);
+            color: #ffaa00;
+            border-color: #ffaa00;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .status-badge.ok .status-dot {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .status-badge.low .status-dot {
+            background: #ff0055;
+            box-shadow: 0 0 10px #ff0055;
+        }
+
+        .status-badge.high .status-dot {
+            background: #ffaa00;
+            box-shadow: 0 0 10px #ffaa00;
+        }
+
+        .thresholds {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .threshold-item {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .threshold-item.low {
+            border-color: #ff0055;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 85, 0.3),
+                inset 0 0 20px rgba(255, 0, 85, 0.1);
+        }
+
+        .threshold-item.high {
+            border-color: #ffaa00;
+            box-shadow: 
+                0 0 20px rgba(255, 170, 0, 0.3),
+                inset 0 0 20px rgba(255, 170, 0, 0.1);
+        }
+
+        .threshold-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .threshold-item.low .threshold-label {
+            color: #ff0055;
+        }
+
+        .threshold-item.high .threshold-label {
+            color: #ffaa00;
+        }
+
+        .threshold-value {
+            font-size: 32px;
+            font-weight: 900;
+        }
+
+        .threshold-item.low .threshold-value {
+            color: #ff0055;
+            text-shadow: 0 0 20px #ff0055;
+        }
+
+        .threshold-item.high .threshold-value {
+            color: #ffaa00;
+            text-shadow: 0 0 20px #ffaa00;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .action-button:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.6),
+                inset 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .action-button.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 85, 0.1);
+            border: 2px solid #ff0055;
+            color: #ff0055;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            display: none;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #00ffff;
+            font-weight: 500;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 420px) {
+            .glucose-circle {
+                width: 240px;
+                height: 240px;
+            }
+
+            .glucose-value {
+                font-size: 60px;
+            }
+
+            .trend-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                right: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="monitor-container">
+        <div class="header">
+            <div class="brand-title">DEXCOM G7</div>
+            <div class="brand-subtitle">CGM SYSTEM</div>
+        </div>
+
+        <div class="nav-menu">
+            <a href="/home" class="nav-btn active">Monitor</a>
+            <a href="/log" class="nav-btn">Log</a>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="glucose-circle">
+            <div class="circle-bg">
+                <div class="status-ring ok" id="statusRing"></div>
+                <div class="circle-inner">
+                    <div class="glucose-value" id="glucoseValue">--</div>
+                    <div class="glucose-unit">mg/dL</div>
+                </div>
+                <div class="trend-arrow" id="trendArrow">→</div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-row">
+                <span class="info-label">Status</span>
+                <div class="status-badge ok" id="statusBadge">
+                    <span class="status-dot"></span>
+                    <span>Loading</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Trend</span>
+                <span class="info-value" id="trendValue">--</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Last Reading</span>
+                <span class="info-value" id="lastReading">--</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Time Since</span>
+                <span class="info-value" id="timeSince">--</span>
+            </div>
+        </div>
+
+        <div class="thresholds">
+            <div class="threshold-item low">
+                <div class="threshold-label">Low Alert</div>
+                <div class="threshold-value">60</div>
+            </div>
+            <div class="threshold-item high">
+                <div class="threshold-label">High Alert</div>
+                <div class="threshold-value">250</div>
+            </div>
+        </div>
+
+        <button class="action-button" id="refreshBtn" onclick="fetchGlucose()">
+            Refresh Data
+        </button>
+
+        <div class="footer" id="lastSync">Last updated: --</div>
+    </div>
+
+    <script>
+        const TREND_ARROWS = {
+            'rising quickly': '↑',
+            'rising': '↗',
+            'rising slightly': '→',
+            'steady': '→',
+            'falling slightly': '→',
+            'falling': '↘',
+            'falling quickly': '↓'
+        };
+
+        function calculateTimeSince(timeString) {
+            const readingTime = new Date(timeString);
+            const now = new Date();
+            const diffMs = now - readingTime;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins === 1) return '1 min ago';
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours === 1) return '1 hour ago';
+            return `${diffHours} hours ago`;
+        }
+
+        async function fetchGlucose() {
+            const btn = document.getElementById('refreshBtn');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            btn.classList.add('loading');
+            btn.textContent = 'Updating...';
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('/');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch glucose data');
+                }
+
+                const data = await response.json();
+                updateDisplay(data);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                errorMsg.textContent = 'Unable to retrieve glucose data. Please try again.';
+                errorMsg.style.display = 'block';
+            } finally {
+                btn.classList.remove('loading');
+                btn.textContent = 'Refresh Data';
+            }
+        }
+
+        function updateDisplay(data) {
+            document.getElementById('glucoseValue').textContent = data.Glucose;
+
+            const statusRing = document.getElementById('statusRing');
+            statusRing.className = `status-ring ${data.Status}`;
+
+            const badge = document.getElementById('statusBadge');
+            const statusText = data.Status.toUpperCase();
+            badge.className = `status-badge ${data.Status}`;
+            badge.innerHTML = `<span class="status-dot"></span><span>${statusText}</span>`;
+
+            const trendLower = data.Trend.toLowerCase();
+            document.getElementById('trendValue').textContent = data.Trend;
+            document.getElementById('trendArrow').textContent = TREND_ARROWS[trendLower] || '→';
+
+            const readingTime = new Date(data.Time);
+            document.getElementById('lastReading').textContent = 
+                readingTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            document.getElementById('timeSince').textContent = calculateTimeSince(data.Time);
+
+            const syncTime = new Date();
+            document.getElementById('lastSync').textContent = 
+                `Last updated: ${syncTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+        }
+
+        fetchGlucose();
+        setInterval(fetchGlucose, 5 * 60 * 1000);
+
+        setInterval(() => {
+            const timeSinceEl = document.getElementById('timeSince');
+            const lastReadingEl = document.getElementById('lastReading');
+            if (lastReadingEl.textContent !== '--') {
+                const lastReading = lastReadingEl.textContent;
+                const today = new Date().toDateString();
+                const timeString = `${today} ${lastReading}`;
+                timeSinceEl.textContent = calculateTimeSince(new Date(timeString));
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
