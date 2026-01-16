@@ -15,7 +15,8 @@ def get_glucose_reading():
 
     try:
         # Using region="ous" for outside US as per your requirement
-        dexcom = Dexcom(username=USERNAME, password=PASSWORD, ous=True)
+        #dexcom = Dexcom(username=USERNAME, password=PASSWORD, ous=True)
+        dexcom = Dexcom(username="roee.dexcom",password="Sdfwer234",region="ous")
         glucose_reading = dexcom.get_current_glucose_reading()
         
         
