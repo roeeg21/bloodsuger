@@ -7,16 +7,18 @@ app = Flask(__name__)
 # --- SUGER_READING LOGIC (Combined) ---
 def get_glucose_reading():
     # Pulling from Vercel Environment Variables
-    USERNAME = os.environ.get("Dexcom_username")
-    PASSWORD = os.environ.get("Dexcom_password")
+    USERNAME_tmp = os.environ.get("Dexcom_username")
+    PASSWORD_tmp = os.environ.get("Dexcom_password")
     
     if not USERNAME or not PASSWORD:
         return {"error": "Missing credentials in Vercel settings"}
 
     try:
         # Using region="ous" for outside US as per your requirement
-        dexcom = Dexcom(username=USERNAME, password=PASSWORD, ous=True)
+        dexcom = Dexcom(username=USERNAME_tmp, password=PASSWORD_tmp, region="ous")
         glucose_reading = dexcom.get_current_glucose_reading()
+    
+    
         
         
         if glucose_reading:
