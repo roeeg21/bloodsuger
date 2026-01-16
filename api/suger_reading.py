@@ -12,7 +12,7 @@ suger_dict = {}
 flag = True
 
 
-dexcom = Dexcom(username=USERNAME_tmp,password=PASSWORD_tmp,ous=flag)
+dexcom = Dexcom(username=USERNAME_tmp,password=PASSWORD_tmp,region="ous")
 
 
 
