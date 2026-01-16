@@ -7,8 +7,8 @@ app = Flask(__name__, template_folder='../templates')
 # --- SUGER_READING LOGIC (Combined) ---
 def get_glucose_reading():
     # Pulling from Vercel Environment Variables
-    USERNAME = os.environ.get("USERNAME_tmp")
-    PASSWORD = os.environ.get("PASSWORD_tmp")
+    USERNAME = os.environ.get("Dexcom_username")
+    PASSWORD = os.environ.get("Dexcom_password")
     
     if not USERNAME or not PASSWORD:
         return {"error": "Missing credentials in Vercel settings"}
