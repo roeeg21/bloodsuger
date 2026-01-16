@@ -2,7 +2,7 @@ import os
 from flask import Flask, jsonify, render_template
 from pydexcom import Dexcom
 
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__)
 
 # --- SUGER_READING LOGIC (Combined) ---
 def get_glucose_reading():
@@ -15,15 +15,17 @@ def get_glucose_reading():
 
     try:
         # Using region="ous" for outside US as per your requirement
-        dexcom = Dexcom(username=USERNAME, password=PASSWORD, ous=True)
+        dexcom = Dexcom(username=USERNAME, password=PASSWORD, region="ous")
         glucose_reading = dexcom.get_current_glucose_reading()
+        
         
         if glucose_reading:
             return {
                 "value": glucose_reading.value,
                 "trend": glucose_reading.trend_description,
                 "time": str(glucose_reading.datetime),
-                "trend_arrow": glucose_reading.trend_arrow
+                "trend_arrow": glucose_reading.trend_arrow,
+                
             }
         return {"error": "No recent glucose reading found"}
     except Exception as e:
