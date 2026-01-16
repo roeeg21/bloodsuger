@@ -1,12 +1,39 @@
-from flask import Flask, jsonify, request, render_template
-import suger_reading.py as suger_reading
+import os
+from flask import Flask, jsonify, render_template
+from pydexcom import Dexcom
 
-app = Flask(__name__)  
+app = Flask(__name__, template_folder='../templates')
 
+# --- SUGER_READING LOGIC (Combined) ---
+def get_glucose_reading():
+    # Pulling from Vercel Environment Variables
+    USERNAME = os.environ.get("USERNAME_tmp")
+    PASSWORD = os.environ.get("PASSWORD_tmp")
+    
+    if not USERNAME or not PASSWORD:
+        return {"error": "Missing credentials in Vercel settings"}
+
+    try:
+        # Using region="ous" for outside US as per your requirement
+        dexcom = Dexcom(username=USERNAME, password=PASSWORD, region="ous")
+        glucose_reading = dexcom.get_current_glucose_reading()
+        
+        if glucose_reading:
+            return {
+                "value": glucose_reading.value,
+                "trend": glucose_reading.trend_description,
+                "time": str(glucose_reading.datetime),
+                "trend_arrow": glucose_reading.trend_arrow
+            }
+        return {"error": "No recent glucose reading found"}
+    except Exception as e:
+        return {"error": str(e)}
+
+# --- FLASK ROUTES ---
 @app.route('/')
 def glucose():
-    suger_dict = suger_reading.get_glucose_reading()
-
+    # Calling the function directly now that it's in the same file
+    suger_dict = get_glucose_reading()
     return jsonify(suger_dict)
 
 @app.route("/home")
@@ -17,6 +44,4 @@ def home():
 def log_page():
     return render_template("log.html")
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
+# No app.run() needed for Vercel
