@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-import suger_reading
+import api.suger_reading as suger_reading
 
 app = Flask(__name__)  
 
@@ -18,5 +18,3 @@ def log_page():
     return render_template("log.html")
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
