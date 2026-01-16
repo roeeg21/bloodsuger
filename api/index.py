@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template
-import suger_reading as suger_reading
+import suger_reading.py as suger_reading
 
 app = Flask(__name__)  
 
