@@ -1,6 +1,5 @@
 from pydexcom import Dexcom
 
-
 import os
 
 LOW_SUGER = 60
