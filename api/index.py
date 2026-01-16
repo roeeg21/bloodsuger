@@ -10,7 +10,7 @@ def get_glucose_reading():
     USERNAME_tmp = os.environ.get("Dexcom_username")
     PASSWORD_tmp = os.environ.get("Dexcom_password")
     
-    if not USERNAME or not PASSWORD:
+    if not USERNAME_tmp or not PASSWORD_tmp:
         return {"error": "Missing credentials in Vercel settings"}
 
     try:
