@@ -2,7 +2,7 @@ import os
 from flask import Flask, jsonify, render_template
 from pydexcom import Dexcom
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
 
 # --- SUGER_READING LOGIC (Combined) ---
 def get_glucose_reading():
