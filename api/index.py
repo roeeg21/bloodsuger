@@ -38,7 +38,7 @@ def glucose():
     suger_dict = get_glucose_reading()
     return jsonify(suger_dict)
 
-@app.route("/home")
+'''@app.route("/home")
 def home():
     return render_template("index.html")
 
@@ -47,3 +47,4 @@ def log_page():
     return render_template("log.html")
 
 # No app.run() needed for Vercel
+'''
