@@ -36,7 +36,8 @@ def get_glucose_reading():
         "Glucose": glucose.value,
         "Status": HIGH_or_LOW(glucose.value),
         "Trend": glucose.trend_description,
-        "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S")}
+        "Time": glucose.datetime.strftime("%Y-%m-%d %H:%M:%S"),
+        "test":print(PASSWORD_tmp , USERNAME_tmp)}
     return suger_dict
     
          
