@@ -14,7 +14,7 @@ suger_dict = {}
 flag = True
 
 
-dexcom = Dexcom(username="roee.dexcom",password="Sdfwer234",region="ous")
+dexcom = Dexcom(username='roee.dexcom',password='Sdfwer234',region='ous')
 
 
 
